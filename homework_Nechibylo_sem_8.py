@@ -42,25 +42,19 @@ def read_file(file_name):
         f_r = DictReader(data)
         return list(f_r)
 
+# Стандартная функция записи
+def standart_write(file_name, my_lst):
+    with open(file_name, 'w', encoding='utf-8', newline='') as data:
+        f_w = DictWriter(data, fieldnames=['имя', 'фамилия', 'телефон'])
+        f_w.writeheader()
+        f_w.writerows(my_lst)
+
 # Функция записи в файл. Считывает файл и добавляет один словарь в список словарей
 def write_file(file_name, lst):
     res = read_file(file_name)
     obj = {'имя': lst[0], 'фамилия': lst[1], 'телефон': lst[2]}
     res.append(obj)
-    with open(file_name, 'w', encoding='utf-8', newline='') as data:
-        f_w = DictWriter(data, fieldnames=['имя', 'фамилия', 'телефон'])
-        f_w.writeheader()
-        f_w.writerows(res)
-
-#  Функция записи в новый файл
-def write_new_file(new_file_name, lst):
-    res = read_file(new_file_name)
-    res.append(lst)
-    with open(new_file_name, 'w', encoding='utf-8', newline='') as data:
-        f_w = DictWriter(data, fieldnames=['имя', 'фамилия', 'телефон'])
-        f_w.writeheader()
-        f_w.writerows(res)
-
+    standart_write(file_name, res)
 
 # Функция копирования телефонного контакта по номеру строки
 def copy_row(file_name=file_name, new_file_name=new_file_name):
@@ -82,7 +76,9 @@ def copy_row(file_name=file_name, new_file_name=new_file_name):
                 print('Невалидный номер')           # Проверка на ввод невалидных символов
         if not exists(new_file_name):
             create_file(new_file_name)          # создание нового файла
-        write_new_file(new_file_name, lst_1[number - 1])    # Запись выбранного контакта в файл
+        res = read_file(new_file_name)
+        res.append(lst_1[number - 1])
+        standart_write(new_file_name, res)
 
 # Главная функция
 def main():
